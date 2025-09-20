@@ -30,7 +30,7 @@ import { AdminLeaderboard } from './pages/admin/AdminResults';
 function App() {
   return (
     <AuthProvider>
-      <Router>
+      <Router basename="/">
         <Routes>
           {/* Public Routes with Navbar and Footer */}
           <Route path="/" element={
