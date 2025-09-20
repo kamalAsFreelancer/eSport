@@ -13,7 +13,7 @@ import { NewsDetailPage } from './pages/public/NewsDetailPage';
 import { TournamentsPage } from './pages/public/TournamentsPage';
 import { AuthPage } from './pages/public/AuthPage';
 
-// Dashboard pages
+// Player Dashboard pages
 import { DashboardHome } from './pages/dashboard/DashboardHome';
 import { UserTournaments } from './pages/dashboard/UsersTournaments';
 import { UserResults } from './pages/dashboard/UserResults';
@@ -32,51 +32,67 @@ function App() {
     <AuthProvider>
       <Router basename="/">
         <Routes>
-          {/* Public Routes with Navbar and Footer */}
-          <Route path="/" element={
-            <div className="min-h-screen flex flex-col">
-              <Navbar />a
-              <main className="flex-1">
-                <HomePage />
-              </main>
-              <Footer />
-            </div>
-          } />
-          <Route path="/news" element={
-            <div className="min-h-screen flex flex-col">
-              <Navbar />
-              <main className="flex-1">
-                <NewsPage />
-              </main>
-              <Footer />
-            </div>
-          } />
-          <Route path="/news/:id" element={
-            <div className="min-h-screen flex flex-col">
-              <Navbar />
-              <main className="flex-1">
-                <NewsDetailPage />
-              </main>
-              <Footer />
-            </div>
-          } />
-          <Route path="/tournaments" element={
-            <div className="min-h-screen flex flex-col">
-              <Navbar />
-              <main className="flex-1">
-                <TournamentsPage />
-              </main>
-              <Footer />
-            </div>
-          } />
+
+          {/* Public Routes */}
+          <Route
+            path="/"
+            element={
+              <div className="min-h-screen flex flex-col">
+                <Navbar />
+                <main className="flex-1">
+                  <HomePage />
+                </main>
+                <Footer />
+              </div>
+            }
+          />
+          <Route
+            path="/news"
+            element={
+              <div className="min-h-screen flex flex-col">
+                <Navbar />
+                <main className="flex-1">
+                  <NewsPage />
+                </main>
+                <Footer />
+              </div>
+            }
+          />
+          <Route
+            path="/news/:id"
+            element={
+              <div className="min-h-screen flex flex-col">
+                <Navbar />
+                <main className="flex-1">
+                  <NewsDetailPage />
+                </main>
+                <Footer />
+              </div>
+            }
+          />
+          <Route
+            path="/tournaments"
+            element={
+              <div className="min-h-screen flex flex-col">
+                <Navbar />
+                <main className="flex-1">
+                  <TournamentsPage />
+                </main>
+                <Footer />
+              </div>
+            }
+          />
           <Route path="/auth" element={<AuthPage />} />
 
           {/* Player Dashboard Routes */}
-          <Route path="/dashboard/*" element={
-            <ProtectedRoute>
-              <DashboardLayout type="player" />
-            </ProtectedRoute>
-          }>
+          <Route
+            path="/dashboard/*"
+            element={
+              <ProtectedRoute>
+                <DashboardLayout type="player" />
+              </ProtectedRoute>
+            }
+          >
             <Route index element={<DashboardHome />} />
             <Route path="profile" element={<UserProfile />} />
             <Route path="tournaments" element={<UserTournaments />} />
@@ -85,11 +101,14 @@ function App() {
           </Route>
 
           {/* Admin Routes */}
-          <Route path="/admin/*" element={
-            <ProtectedRoute requireAdmin>
-              <DashboardLayout type="admin" />
-            </ProtectedRoute>
-          }>
+          <Route
+            path="/admin/*"
+            element={
+              <ProtectedRoute requireAdmin>
+                <DashboardLayout type="admin" />
+              </ProtectedRoute>
+            }
+          >
             <Route index element={<AdminHome />} />
             <Route path="news" element={<AdminNews />} />
             <Route path="create" element={<CreateNews />} />
@@ -98,8 +117,7 @@ function App() {
             <Route path="results" element={<AdminLeaderboard />} />
           </Route>
 
-
-          {/* Catch all route */}
+          {/* Catch-all */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
