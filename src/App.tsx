@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Navbar } from './components/layout/Navbar';
@@ -30,7 +30,6 @@ import { AdminLeaderboard } from './pages/admin/AdminResults';
 function App() {
   return (
     <AuthProvider>
-      <Router basename="/">
         <Routes>
 
           {/* Public Routes */}
@@ -120,7 +119,6 @@ function App() {
           {/* Catch-all */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </Router>
     </AuthProvider>
   );
 }
