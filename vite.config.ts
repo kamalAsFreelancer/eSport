@@ -20,5 +20,5 @@ export default defineConfig({
       },
     },
   },
-  base: '/',
+  base: '/eSport/', // Set base path for GitHub Pages
 });
