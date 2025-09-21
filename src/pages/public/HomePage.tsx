@@ -64,7 +64,7 @@ export const HomePage: React.FC = () => {
       <section className="relative py-32 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-center">
         <div className="max-w-3xl mx-auto px-4">
           <h1 className="text-4xl md:text-6xl font-bold mb-4">
-            Welcome to <span className="text-yellow-400">TourneyHub</span>
+            Welcome to <span className="text-yellow-400">BARKHub</span>
           </h1>
           <p className="text-lg md:text-2xl mb-6">
             Join competitive gaming tournaments and stay updated with the latest esports news.

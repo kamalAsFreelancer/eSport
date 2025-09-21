@@ -6,8 +6,8 @@ import './index.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter basename="/"> {/* Root path */}
+    {/* <BrowserRouter basename="/"> */}
       <App />
-    </BrowserRouter>
+    {/* </BrowserRouter> */}
   </StrictMode>
 );
