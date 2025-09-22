@@ -10,7 +10,7 @@ export const Footer: React.FC = () => {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
               <Trophy className="h-8 w-8 text-blue-400" />
-              <span className="text-xl font-bold">BARKHub</span>
+              <span className="text-xl font-bold">PlayNation</span>
             </div>
             <p className="text-gray-400 mb-6 max-w-md">
               Your premier destination for gaming tournaments and esports news. 
@@ -55,7 +55,7 @@ export const Footer: React.FC = () => {
             <ul className="space-y-3">
               <li className="flex items-center space-x-2">
                 <Mail className="h-5 w-5 text-blue-400" />
-                <span className="text-gray-400">example@gmail.com</span>
+                <span className="text-gray-400">kamal.pahan098@gmail.com</span>
               </li>
               <li className="flex items-center space-x-2">
                 <Phone className="h-5 w-5 text-blue-400" />

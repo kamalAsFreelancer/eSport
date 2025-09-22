@@ -10,12 +10,19 @@ export const HomePage: React.FC = () => {
   const [featuredNews, setFeaturedNews] = useState<News[]>([]);
   const [upcomingTournaments, setUpcomingTournaments] = useState<Tournament[]>([]);
   const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    activeTournaments: 0,
+    registeredPlayers: 0,
+    monthlyEvents: 0,
+  });
 
   useEffect(() => {
     fetchFeaturedNews();
     fetchUpcomingTournaments();
+    fetchStats();
   }, []);
 
+  // --- Fetch Featured News ---
   const fetchFeaturedNews = async () => {
     try {
       const { data, error } = await supabase
@@ -25,6 +32,7 @@ export const HomePage: React.FC = () => {
         .eq("featured", true)
         .order("created_at", { ascending: false })
         .limit(3);
+
       if (error) throw error;
       setFeaturedNews(data || []);
     } catch (error) {
@@ -32,6 +40,7 @@ export const HomePage: React.FC = () => {
     }
   };
 
+  // --- Fetch Upcoming Tournaments ---
   const fetchUpcomingTournaments = async () => {
     try {
       const { data, error } = await supabase
@@ -42,6 +51,7 @@ export const HomePage: React.FC = () => {
         .gte("start_date", new Date().toISOString())
         .order("start_date", { ascending: true })
         .limit(3);
+
       if (error) throw error;
       setUpcomingTournaments(data || []);
       setLoading(false);
@@ -51,6 +61,46 @@ export const HomePage: React.FC = () => {
     }
   };
 
+  // --- Fetch Stats ---
+  const fetchStats = async () => {
+    try {
+      // Active tournaments
+      const { count: tournamentsCount, error: tournamentsError } = await supabase
+        .from("tournaments")
+        .select("*", { count: "exact" })
+        .eq("published", true);
+      if (tournamentsError) throw tournamentsError;
+
+      // Registered players
+      const { count: playersCount, error: playersError } = await supabase
+        .from("profiles")
+        .select("*", { count: "exact" });
+      if (playersError) throw playersError;
+
+      // Monthly events
+      const now = new Date();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString();
+
+      const { count: eventsCount, error: eventsError } = await supabase
+        .from("tournaments")
+        .select("*", { count: "exact" })
+        .gte("start_date", startOfMonth)
+        .lte("start_date", endOfMonth)
+        .eq("published", true);
+      if (eventsError) throw eventsError;
+
+      setStats({
+        activeTournaments: tournamentsCount || 0,
+        registeredPlayers: playersCount || 0,
+        monthlyEvents: eventsCount || 0,
+      });
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+    }
+  };
+
+  // --- Format Date ---
   const formatDate = (dateString: string) =>
     new Date(dateString).toLocaleDateString("en-US", {
       month: "short",
@@ -64,7 +114,7 @@ export const HomePage: React.FC = () => {
       <section className="relative py-32 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-center">
         <div className="max-w-3xl mx-auto px-4">
           <h1 className="text-4xl md:text-6xl font-bold mb-4">
-            Welcome to <span className="text-yellow-400">BARKHub</span>
+            Welcome to <span className="text-yellow-400">PlayNation</span>
           </h1>
           <p className="text-lg md:text-2xl mb-6">
             Join competitive gaming tournaments and stay updated with the latest esports news.
@@ -96,21 +146,21 @@ export const HomePage: React.FC = () => {
               <div className="bg-indigo-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                 <Trophy className="h-8 w-8 text-indigo-600" />
               </div>
-              <h3 className="text-3xl font-bold text-gray-900 mb-2">50+</h3>
+              <h3 className="text-3xl font-bold text-gray-900 mb-2">{stats.activeTournaments}</h3>
               <p className="text-gray-600">Active Tournaments</p>
             </div>
             <div className="bg-emerald-50 rounded-xl p-6 shadow hover:shadow-lg transition-shadow">
               <div className="bg-emerald-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                 <Users className="h-8 w-8 text-emerald-600" />
               </div>
-              <h3 className="text-3xl font-bold text-gray-900 mb-2">10K+</h3>
+              <h3 className="text-3xl font-bold text-gray-900 mb-2">{stats.registeredPlayers}</h3>
               <p className="text-gray-600">Registered Players</p>
             </div>
             <div className="bg-purple-50 rounded-xl p-6 shadow hover:shadow-lg transition-shadow">
               <div className="bg-purple-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                 <Calendar className="h-8 w-8 text-purple-600" />
               </div>
-              <h3 className="text-3xl font-bold text-gray-900 mb-2">100+</h3>
+              <h3 className="text-3xl font-bold text-gray-900 mb-2">{stats.monthlyEvents}</h3>
               <p className="text-gray-600">Monthly Events</p>
             </div>
           </div>

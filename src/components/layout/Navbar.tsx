@@ -27,7 +27,7 @@ export const Navbar: React.FC = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <Trophy className="h-8 w-8 text-blue-600" />
-            <span className="text-xl font-bold text-gray-900">BARKHub</span>
+            <span className="text-xl font-bold text-gray-900">PlayNation</span>
           </Link>
 
           {/* Desktop Navigation */}
