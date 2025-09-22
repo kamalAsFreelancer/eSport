@@ -27,6 +27,7 @@ import { AdminTournaments } from './pages/admin/AdminTournaments';
 import { AdminPlayers } from './pages/admin/AdminPlayers';
 import { AdminLeaderboard } from './pages/admin/AdminResults';
 
+
 function App() {
   return (
     <AuthProvider>
