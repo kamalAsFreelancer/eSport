@@ -107,7 +107,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { username, full_name: fullName } },
+      options: { 
+        emailRedirectTo: "https://kamalAsFreelancer.github.io/eSport/dashboard",
+        data: { username, full_name: fullName },
+      },
     });
     if (error) throw error;
 
