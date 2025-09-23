@@ -40,11 +40,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .select('*')
         .eq('id', userId)
         .single();
-      if (error) throw error;
-      setProfile(data);
+
+      if (error && error.code !== 'PGRST116') throw error; // ignore "no rows found"
+      if (data) setProfile(data);
+      else setProfile(null);
     } catch (error) {
       console.error('Error fetching profile:', error);
       setProfile(null);
+    }
+  };
+
+  const ensureProfile = async (user: User, username?: string, fullName?: string) => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('id', user.id)
+      .single();
+
+    if (!data) {
+      const { error: insertError } = await supabase.from('profiles').insert({
+        id: user.id,
+        username: username || user.email?.split('@')[0],
+        full_name: fullName || null,
+      });
+      if (insertError) console.error('Error inserting profile:', insertError);
     }
   };
 
@@ -58,6 +77,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(session?.user ?? null);
 
       if (session?.user) {
+        await ensureProfile(session.user);
         await fetchProfile(session.user.id);
       }
 
@@ -73,6 +93,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(session?.user ?? null);
 
       if (session?.user) {
+        await ensureProfile(session.user);
         await fetchProfile(session.user.id);
       } else {
         setProfile(null);
@@ -86,13 +107,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, []);
 
-  // Ensure profile always refetches if user changes
-  useEffect(() => {
-    if (user) {
-      fetchProfile(user.id);
-    }
-  }, [user]);
-
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
@@ -104,26 +118,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     username: string,
     fullName?: string
   ) => {
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { 
+      options: {
         emailRedirectTo: "https://kamalAsFreelancer.github.io/eSport/dashboard",
         data: { username, full_name: fullName },
       },
     });
     if (error) throw error;
 
-    if (data.user) {
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: data.user.id,
-          username,
-          full_name: fullName || null,
-        });
-      if (profileError) throw profileError;
-    }
+    // ⚠️ Profile will only be created after confirmation when user logs in
   };
 
   const signOut = async () => {
@@ -141,6 +146,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       .from('profiles')
       .update({ ...updates, updated_at: new Date().toISOString() })
       .eq('id', user.id);
+
     if (error) throw error;
 
     await fetchProfile(user.id);
